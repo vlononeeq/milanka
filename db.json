@@ -1,1 +1,50 @@
 
+{
+    "products": [
+      {
+        "id": 1,
+        "name": "Молоко",
+        "price": 25,
+        "category": "Напитки"
+      },
+      {
+        "id": 2,
+        "name": "Хлеб",
+        "price": 15,
+        "category": "Выпечка"
+      },
+      {
+        "id": 3,
+        "name": "Яблоки",
+        "price": 30,
+        "category": "Фрукты"
+      }
+    ],
+    "users": [
+      {
+        "id": 1,
+        "name": "Иван",
+        "email": "ivan@example.com"
+      },
+      {
+        "id": 2,
+        "name": "Мария",
+        "email": "maria@example.com"
+      }
+    ],
+    "orders": [
+      {
+        "id": 1,
+        "userId": 1,
+        "products": [1, 3],
+        "total": 55
+      },
+      {
+        "id": 2,
+        "userId": 2,
+        "products": [2],
+        "total": 15
+      }
+    ]
+  }
+  
