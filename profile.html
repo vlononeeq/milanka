@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Мой Профиль | Robocode Marketplace</title>
+    
+    <style>
+        /* ========================================= */
+        /* Стили: style.css (Общие стили и карточки) */
+        /* ========================================= */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #f2f2f2, #e6e6e6);
+            margin: 0;
+            padding: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        /* Общие стили для карточек */
+        .card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .card-body h2 {
+            font-size: 20px;
+            margin: 0 0 8px;
+        }
+
+        .card-price { 
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .card-desc { 
+            font-size: 14px;
+            color: #666;
+            margin: 10px 0 15px;
+        }
+
+
+        /* ========================================= */
+        /* Стили: profile.css (Стили страницы профиля) */
+        /* ========================================= */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: #000;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            z-index: 1000;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #444;
+        }
+
+        .profile-container {
+            max-width: 900px;
+            margin: 60px auto 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 5px solid #000;
+            box-shadow: 0 0 0 5px #f2f2f2;
+        }
+
+        .profile-name {
+            font-size: 28px;
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .profile-email {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .sold-products-section {
+            padding-top: 20px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            border-left: 4px solid #000;
+            padding-left: 10px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        
+        /* Дополнительные стили для карточки проданного товара */
+        .sold-card .buy-btn {
+            background: #e74c3c; /* Изменяем цвет кнопки для "Продано" */
+            cursor: default;
+        }
+
+        .sold-card .buy-btn:hover {
+            background: #c0392b;
+        }
+
+        @media (max-width: 600px) {
+            .profile-container {
+                margin-top: 50px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">← Назад</a>
+    
+    <div class="profile-container">
+        
+        <header class="profile-header">
+            <img src="https://i.pinimg.com/736x/ab/be/f0/abbef0a478e56dd2b787514c8efd2084.jpg" alt="Аватар пользователя" class="profile-avatar">
+            <h1 class="profile-name">RoboUser 1337</h1>
+            <p class="profile-email">user@robomarket.com</p>
+        </header>
+
+        <section class="sold-products-section">
+            <h2 class="section-title">Проданные товары</h2>
+            <div class="products-grid" id="sold-products-grid">
+                <p class="loading-message">Загрузка данных...</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // =========================================
+        // Скрипт: profile.js (Загрузка проданных товаров)
+        // =========================================
+        const mockSoldProducts = [
+            {
+                id: 101,
+                title: "Проданный Бот-Разведчик V1",
+                price: 150,
+                description: "Эффективный бот для сбора информации."
+            },
+            {
+                id: 102,
+                title: "Проданный Набор Двигателей M3",
+                price: 55,
+                description: "Высокоскоростные двигатели для гоночных роботов."
+            },
+            {
+                id: 103,
+                title: "Проданная Плата ESP32",
+                price: 12,
+                description: "Плата для IOT проектов."
+            }
+        ];
+
+        const images = [
+            "https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbJztyKF0hFLHS8RKoYLnffLMQ1yJrri9tmw&s",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSh3Hp8z54nzw2jkJW2OgdH8E8_WFXzLHg2ow&s"
+        ];
+
+        function renderSoldProducts(products) {
+            const grid = document.getElementById("sold-products-grid");
+            grid.innerHTML = ''; // Очистка сообщения о загрузке
+
+            if (products.length === 0) {
+                grid.innerHTML = '<p>Пока нет проданных товаров.</p>';
+                return;
+            }
+
+            products.forEach((p, index) => {
+                grid.innerHTML += `
+                    <div class="card sold-card">
+                        <img src="${images[index % images.length]}" alt="${p.title}">
+                        <div class="card-body">
+                            <h2 class="card-title">${p.title}</h2>
+                            <p class="card-price">${p.price}$</p>
+                            <p class="card-desc">${p.description}</p>
+                            <button class="buy-btn">Продано</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Имитация загрузки данных
+        document.addEventListener("DOMContentLoaded", () => {
+            // Имитация задержки загрузки
+            setTimeout(() => {
+                renderSoldProducts(mockSoldProducts);
+            }, 1000); 
+        });
+    </script>
+</body>
+</html>
